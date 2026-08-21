@@ -1,0 +1,84 @@
+#!/bin/sh
+set -e
+asciiDir=~/.config/fetsh/ascii
+asciiHeight=9
+asciiWidth=19
+
+error() {
+	echo !!! Error:
+	echo !!! idfk you probably spelt the logo name wrong
+	echo !!!
+	exit
+}
+trap error ERR
+
+if [[ $#1 -eq 01 ]]; then
+	echo !!! Error:
+	echo !!! please specify an ascii art located in ~/.config/fetsh/ascii
+	echo !!!
+	exit 
+fi
+pkgCount() {
+for pm in cargo flatpak pacman
+do
+	case $(command -v $pm) in
+		/usr/sbin/pacman)
+			pmPkgs="Pacman: $(pacman -Q | wc -l)"
+			;;
+		/usr/sbin/flatpak)
+			fpPkgs=$(flatpak list | wc -l)
+			if [[ ${fpPkgs} -gt 0 ]]; then
+				fpPkgs=", flatpak: ${fpPkgs}"
+			else 
+				fpPkgs=""
+			fi
+			;;
+		/usr/sbin/cargo)
+			cargoPkgs=$(($(cargo install --list | wc -l)/2))
+			if [[ ${cargoPkgs} -gt 0 ]]; then
+				cargoPkgs=", cargo: ${cargoPkgs}"
+			else
+				cargoPkgs=""
+			fi
+			;;
+	esac
+done
+echo ${pmPkgs}${fpPkgs}${cargoPkgs}
+}
+
+moduleCol2=(
+	""
+	""
+	"$(cat /etc/os-release | grep NAME -m 1 | sed 's/^.....//' | sed 's/\"//g')"
+	"$(cat /sys/devices/virtual/dmi/id/product_name)"
+	"$(uname -r)"
+	"$(uptime -p | sed 's/^...//')"
+	"$(pkgCount)"
+ 	"$(echo $($SHELL --version))"
+)
+
+moduleCol1=(
+	"$(whoami)@$(cat /etc/hostname)"
+	"$(echo --------------------)"
+	"OS: "
+	"Host: "
+	"Kernel: "
+	"Uptime: "
+	"Packages: "
+	"Shell: " 
+)
+printline() {
+	echo -e "\e[$2C$1"
+}
+cat ${asciiDir}/$1
+echo -e "\e[${asciiHeight}A"
+
+x=0
+while [[ x -lt ${#moduleCol2[@]} ]]
+do
+	printline "${moduleCol1[${x}]}" ${asciiWidth}
+	echo -e "\e[2A"
+	printline "${moduleCol2[${x}]}" $((${asciiWidth}+13))
+	x=$((${x}+1))
+done
+echo ""
