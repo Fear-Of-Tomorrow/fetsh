@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-asciiDir=~/.config/fetsh/ascii
+asciiDir=~/.config/fetchsh/ascii
 asciiHeight=9
 asciiWidth=19
 
