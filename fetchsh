@@ -14,7 +14,7 @@ trap error ERR
 
 if [[ $#1 -eq 01 ]]; then
 	echo !!! Error:
-	echo !!! please specify an ascii art located in ~/.config/fetsh/ascii
+	echo !!! please specify an ascii art located in ~/.config/fetchsh/ascii
 	echo !!!
 	exit 
 fi
