@@ -1,5 +1,5 @@
 #!/bin/sh
-mkdir ~/.config/fetsh
-cp -r ascii ~/.config/fetsh
+mkdir ~/.config/fetchsh
+cp -r ascii ~/.config/fetchsh
 sudo cp fetsh /usr/bin/
 sudo chmod +x /usr/bin/fetsh
